@@ -295,3 +295,18 @@ TEST(TSet, check_negation_operator)
 
   EXPECT_EQ(expSet, set1);
 }
+
+TEST(TSet, ChainUnion)
+{
+	TSet s1(10), s2(10), s3(10);
+	s1.InsElem(4);
+	s2.InsElem(6);
+	s3.InsElem(8);
+	TSet result = s1 + s2 + s3;
+	EXPECT_TRUE(result.IsMember(4));
+	EXPECT_TRUE(result.IsMember(6));
+	EXPECT_TRUE(result.IsMember(8));
+	for (int i = 0; i < 10; i++)
+		if (i != 4 && i != 6 && i != 8)
+			EXPECT_FALSE(result.IsMember(i));
+}

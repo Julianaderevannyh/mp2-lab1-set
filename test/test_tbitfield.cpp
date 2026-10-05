@@ -272,16 +272,17 @@ TEST(TBitField, invert_plus_and_operator_on_different_size_bitfield)
 
 TEST(TBitField, can_invert_many_random_bits_bitfield)
 {
-  const int size = 38;
+  const int size = 44;
   TBitField bf(size), negBf(size), expNegBf(size);
 
   std::vector<int> bits;
   bits.push_back(0);
   bits.push_back(1);
-  bits.push_back(14);
-  bits.push_back(16);
-  bits.push_back(33);
+  bits.push_back(7);
+  bits.push_back(15);
+  bits.push_back(23);
   bits.push_back(37);
+  bits.push_back(42);
 
   for (unsigned int i = 0; i < bits.size(); i++)
     bf.SetBit(bits[i]);
@@ -308,4 +309,37 @@ TEST(TBitField, bitfields_with_different_bits_are_not_equal)
   bf2.SetBit(2);
 
   EXPECT_NE(bf1, bf2);
+}
+
+TEST(TBitField, DoubleClearStaysZero)
+{
+    TBitField a(10);
+    a.SetBit(3);
+    EXPECT_EQ(a.GetBit(3), 1);
+
+    a.ClrBit(3);
+    EXPECT_EQ(a.GetBit(3), 0);
+
+    a.ClrBit(3);
+    EXPECT_EQ(a.GetBit(3), 0);
+}
+TEST(TBitField, ChainOrThree)
+{
+    TBitField bf1(10), bf2(10), bf3(10);
+
+    bf1.SetBit(2);
+    bf2.SetBit(7);
+    bf3.SetBit(9);
+
+
+    TBitField result = bf1 | bf2 | bf3;
+
+    EXPECT_EQ(result.GetBit(2), 1);
+    EXPECT_EQ(result.GetBit(7), 1);
+    EXPECT_EQ(result.GetBit(9), 1);
+
+
+    for (int i = 0; i < 10; i++)
+        if (i != 2 && i != 7 && i != 9)
+            EXPECT_EQ(result.GetBit(i), 0);
 }
